@@ -3,18 +3,41 @@ cmake_minimum_required(VERSION 3.10)
 # Project declaration
 project(nfd)
 
+set(SOURCE_PATH ../../src)
 # Set output directories for the build types
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ../../lib/Debug/x64)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ../../lib/Release/x64)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ../../lib/${CMAKE_BUILD_TYPE}/)
 
 # Set source files
-set(SOURCE_FILES
-    ../../src/nfd_win.cpp
-    ../../src/nfd_common.c
-)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(SOURCE_FILES
+        ${SOURCE_PATH}/nfd_win.cpp
+        ${SOURCE_PATH}/nfd_common.c
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+    if(USE_ZENITY)
+        set(SOURCE_FILES
+            ../../src/nfd_zenity.c
+            ../../src/nfd_common.c
+        )
+    else()
+        set(SOURCE_FILES
+            ../../src/nfd_gtk.c
+            ../../src/nfd_common.c
+        )
+    endif()
+
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")  # macOS is detected as "Darwin"
+    set(SOURCE_FILES
+        ../../src/nfd_cocoa.m   # Objective-C file for Cocoa
+        ../../src/nfd_common.c
+    )
+else()
+    message(FATAL_ERROR "Unsupported platform ${CMAKE_SYSTEM_NAME}")
+endif()
 # Include directories
-include_directories(../../src/include)
+include_directories( ${SOURCE_PATH}/include)
 
 
 # Define the library target
