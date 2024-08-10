@@ -15,7 +15,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         ${SOURCE_PATH}/nfd_common.c
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-
+    message("Use Zenity: ${USE_ZENITY}")
     if(USE_ZENITY)
         set(SOURCE_FILES
             ../../src/nfd_zenity.c
