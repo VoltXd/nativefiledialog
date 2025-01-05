@@ -42,3 +42,10 @@ include_directories( ${SOURCE_PATH}/include)
 
 # Define the library target
 add_library(nfd STATIC ${SOURCE_FILES})
+
+if (UNIX AND NOT APPLE AND NOT ANDROID)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTK REQUIRED gtk+-3.0)
+    target_link_libraries(nfd PRIVATE ${GTK_LIBRARIES})
+    target_include_directories(nfd PRIVATE ${GTK_INCLUDE_DIRS})
+endif()
